@@ -1,27 +1,589 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>ハルキのポートフォリオ</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ハルキ - Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+            /* background: url('./assets/DSC_1048.JPG') no-repeat center center fixed; */
+            background-size: cover;
+            color: #2a2a2a;
+            line-height: 1.7;
+            overflow-x: hidden;
+            font-weight: 400;
+        }
+
+        /* 微細な虫の音のような動きのアニメーション */
+        .nature-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #ffd700;
+            border-radius: 50%;
+            animation: firefly 15s infinite ease-in-out;
+            box-shadow: 0 0 6px #ffd700, 0 0 12px #ffd700, 0 0 18px #ffd700;
+        }
+
+        @keyframes firefly {
+            0% {
+                transform: translateX(0px) translateY(100vh);
+                opacity: 0;
+            }
+            5% {
+                opacity: 1;
+            }
+            25% {
+                transform: translateX(200px) translateY(70vh);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateX(-100px) translateY(40vh);
+                opacity: 1;
+            }
+            75% {
+                transform: translateX(150px) translateY(20vh);
+                opacity: 0.6;
+            }
+            95% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(0px) translateY(-10vh);
+                opacity: 0;
+            }
+        }
+
+        /* メインコンテナ */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* ヘッダー */
+        .header {
+            text-align: center;
+            margin-bottom: 80px;
+            opacity: 0;
+            animation: fadeInUp 1.5s ease forwards;
+        }
+
+        .name {
+            font-size: 2.8rem;
+            font-weight: 400;
+            color: #333;
+            margin-bottom: 25px;
+            letter-spacing: 0.02em;
+            font-family: 'Georgia', 'Times', serif;
+        }
+
+        .bio {
+            font-size: 1.1rem;
+            color: #444;
+            max-width: 520px;
+            margin: 0 auto;
+            line-height: 1.8;
+            font-weight: 400;
+        }
+
+        .profile-image {
+            max-width: 600px;
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* リアルタイム活動セクション */
+        .real-time-section {
+            margin-bottom: 80px;
+            opacity: 0;
+            animation: fadeInUp 1.5s ease 0.3s forwards;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 45px;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            padding-bottom: 12px;
+        }
+
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .activity-card {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            padding: 32px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .activity-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 0, 0, 0.01), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 6s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .activity-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+            background: rgba(255, 255, 255, 0.92);
+        }
+
+        .activity-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .github-icon { background: #181717; color: white; }
+        .zenn-icon { background: #3EA8FF; color: white; }
+        .youtube-icon { background: #FF0000; color: white; }
+        .note-icon { background: #41C9B4; color: white; }
+        .x-icon { background: #000000; color: white; }
+
+        .activity-title {
+            font-size: 1.15rem;
+            color: #333;
+            font-weight: 500;
+            letter-spacing: 0.005em;
+        }
+
+        .activity-subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        .activity-content {
+            color: #444;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        .last-updated {
+            margin-top: 18px;
+            font-size: 0.8rem;
+            color: #777;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        /* プロジェクトセクション削除 */
+
+        /* フッター */
+        .footer {
+            text-align: center;
+            padding: 55px 0;
+            color: #555;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            opacity: 0;
+            animation: fadeInUp 1.5s ease 0.6s forwards;
+            font-weight: 400;
+        }
+
+        /* アニメーション */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* レスポンシブ */
+        /* 音の波紋エフェクト */
+        .sound-ripple {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: ripple 8s infinite ease-out;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes ripple {
+            0% {
+                width: 4px;
+                height: 4px;
+                opacity: 0.8;
+            }
+            50% {
+                width: 200px;
+                height: 200px;
+                opacity: 0.2;
+            }
+            100% {
+                width: 400px;
+                height: 400px;
+                opacity: 0;
+            }
+        }
+        /* 音の表現のためのオーディオコントロール */
+        .audio-control {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50px;
+            padding: 12px 18px;
+            backdrop-filter: blur(20px);
+            font-size: 0.75rem;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 300;
+            letter-spacing: 0.02em;
+        }
+
+        .audio-control:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 微細な脈動アニメーション */
+        .pulse-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.01) 100%);
+            animation: pulse 12s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.6;
+                transform: scale(1.02);
+            }
+        }
+          .name {
+              font-size: 2.5rem;
+          }
+          
+          .profile-image {
+              max-width: 90%;
+              margin: 15px 0;
+          }
+          
+          .activity-grid {
+              grid-template-columns: 1fr;
+          }
+          
+          .container {
+              padding: 40px 15px;
+          }
+    </style>
 </head>
 <body>
-  <h1>はるき</h1>
+    <!-- 自然の粒子アニメーション -->
+    <div class="nature-particles" id="particles"></div>
+    
+    <!-- 音の波紋エフェクト -->
+    <div class="sound-ripple" style="animation-delay: 0s;"></div>
+    <div class="sound-ripple" style="animation-delay: 2s;"></div>
+    <div class="sound-ripple" style="animation-delay: 4s;"></div>
+    
+    <!-- 微細な脈動オーバーレイ -->
+    <div class="pulse-overlay"></div>
 
-  <h2>システム開発</h2>
-  <ul>
-    <li><a href="https://github.com/gokipon">github</a></li>
-    <li>zenn</li>
-  </ul>
+    <div class="container">
+        <!-- ヘッダー -->
+        <header class="header">
+            <img src="./assets/DSC_1048.JPG" alt="小野陽輝" class="profile-image">
+            <h1 class="name">小野 陽輝</h1>
+            <p class="bio">
+                システム開発と音楽表現を通じて、<br>
+                新たな体験を探求している。<br>
+                意図を排除し、ありのままを伝える場所。
+            </p>
+        </header>
 
-  <h2>音楽</h2>
-  <ul>
-    <li><a href="https://www.youtube.com/@harukikkily3808">youtube</a></li>
-  </ul>
+        <!-- リアルタイム活動セクション -->
+        <section class="real-time-section">
+            <h2 class="section-title">Activity</h2>
+            <div class="activity-grid">
+                <!-- GitHub -->
+                <div class="activity-card" onclick="openLink('https://github.com/gokipon')">
+                    <div class="activity-header">
+                        <div class="activity-icon github-icon">⚡</div>
+                        <div>
+                            <div class="activity-title">GitHub</div>
+                            <div class="activity-subtitle">システム開発</div>
+                        </div>
+                    </div>
+                    <div class="activity-content">
+                        日々のコードとプロジェクトの軌跡。実験的なアイデアから実用的なツールまで、開発の過程をありのまま記録。
+                    </div>
+                    <div class="last-updated">継続的に更新</div>
+                </div>
 
-  <h2>私生活・日々</h2>
-  <ul>
-    <li><a href="https://note.com/donpontyaka">note</a></li>
-    <li><a href="https://x.com/donpontyaka">X</a></li>
-  </ul>
+                <!-- Zenn -->
+                <!-- <div class="activity-card" onclick="openLink('https://zenn.dev/haruki')">
+                    <div class="activity-header">
+                        <div class="activity-icon zenn-icon">📝</div>
+                        <div>
+                            <div class="activity-title">Zenn</div>
+                            <div class="activity-subtitle">技術・思考</div>
+                        </div>
+                    </div>
+                    <div class="activity-content">
+                        技術的発見と思考の記録。開発プロセスで得た知見や、デザインに関する考察を整理。
+                    </div>
+                    <div class="last-updated">不定期更新</div>
+                </div> -->
+
+                <!-- YouTube -->
+                <div class="activity-card" onclick="openLink('https://www.youtube.com/@harukikkily3808')">
+                    <div class="activity-header">
+                        <div class="activity-icon youtube-icon">🎵</div>
+                        <div>
+                            <div class="activity-title">YouTube</div>
+                            <div class="activity-subtitle">音楽</div>
+                        </div>
+                    </div>
+                    <div class="activity-content">
+                        音楽制作と演奏の記録。環境音や実験的な音響作品、ライブセッションの様子。
+                    </div>
+                    <div class="last-updated">週末に更新</div>
+                </div>
+
+                <!-- Note -->
+                <div class="activity-card" onclick="openLink('https://note.com/donpontyaka')">
+                    <div class="activity-header">
+                        <div class="activity-icon note-icon">📖</div>
+                        <div>
+                            <div class="activity-title">Note</div>
+                            <div class="activity-subtitle">私生活・日々</div>
+                        </div>
+                    </div>
+                    <div class="activity-content">
+                        日常の中で感じたこと、体験したこと。私生活と創作活動の境界にある瞬間を記録。
+                    </div>
+                    <div class="last-updated">気まぐれに更新</div>
+                </div>
+
+                <!-- X -->
+                <div class="activity-card" onclick="openLink('https://x.com/donpontyaka')">
+                    <div class="activity-header">
+                        <div class="activity-icon x-icon">💭</div>
+                        <div>
+                            <div class="activity-title">X</div>
+                            <div class="activity-subtitle">瞬間・思考</div>
+                        </div>
+                    </div>
+                    <div class="activity-content">
+                        リアルタイムな思考の断片。開発中のひらめき、音楽制作のメモ、日常の小さな発見。
+                    </div>
+                    <div class="last-updated">随時更新</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- プロジェクトセクション削除 -->
+
+        <!-- フッター -->
+        <footer class="footer">
+            <p>ただ存在し、静かに成長していく。</p>
+        </footer>
+
+        <!-- 音のコントロール -->
+        <div class="audio-control" onclick="toggleAmbientSound()">
+            ◦ 環境音
+        </div>
+    </div>
+
+    <script>
+        // 自然の粒子アニメーション
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 8;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // ランダムな位置と遅延
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 25 + 's';
+                particle.style.animationDuration = (20 + Math.random() * 15) + 's';
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 風のような（視覚的表現）
+        function addAmbientEffects() {
+            const cards = document.querySelectorAll('.activity-card');
+            
+            cards.forEach((card, index) => {
+                // 微細な揺らぎアニメーション
+                setInterval(() => {
+                    const intensity = 0.98 + Math.random() * 0.04;
+                    card.style.filter = `brightness(${intensity}) contrast(${0.98 + Math.random() * 0.04})`;
+                    
+                    setTimeout(() => {
+                        card.style.filter = 'brightness(1) contrast(1)';
+                    }, 50 + Math.random() * 100);
+                }, 4000 + Math.random() * 8000);
+            });
+        }
+
+        // リンクを開く関数
+        function openLink(url) {
+            window.open(url, '_blank', 'noopener,noreferrer');
+        }
+
+        // 音のコントロール
+        let ambientSoundEnabled = false;
+        let ambientAudio = null;
+        
+        function toggleAmbientSound() {
+            const audioControl = document.querySelector('.audio-control');
+            const ripples = document.querySelectorAll('.sound-ripple');
+            
+            ambientSoundEnabled = !ambientSoundEnabled;
+            
+            if (ambientSoundEnabled) {
+                audioControl.textContent = '● 環境音';
+                audioControl.style.color = '#333';
+                
+                // 波紋エフェクトを活性化
+                ripples.forEach(ripple => {
+                    ripple.style.display = 'block';
+                });
+                
+                console.log('環境音を再生開始');
+                // 音声ファイルを再生
+                if (!ambientAudio) {
+                    ambientAudio = new Audio('assets/250504-211232.WAV');
+                    ambientAudio.loop = true;
+                    ambientAudio.volume = 0.7;
+                    
+                    // ループが途切れた場合の対策
+                    ambientAudio.addEventListener('ended', function() {
+                        if (ambientSoundEnabled) {
+                            ambientAudio.currentTime = 0;
+                            ambientAudio.play();
+                        }
+                    });
+                }
+                ambientAudio.play().catch(e => console.log('Audio play failed:', e));
+                
+            } else {
+                audioControl.textContent = '◦ 環境音';
+                audioControl.style.color = '#666';
+                
+                // 波紋エフェクトを非活性化
+                ripples.forEach(ripple => {
+                    ripple.style.display = 'none';
+                });
+                
+                console.log('環境音を停止');
+                // 音声を停止
+                if (ambientAudio) {
+                    ambientAudio.pause();
+                    ambientAudio.currentTime = 0;
+                }
+            }
+        }
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            setTimeout(addAmbientEffects, 3000);
+            
+            // 波紋エフェクトを初期は非表示
+            const ripples = document.querySelectorAll('.sound-ripple');
+            ripples.forEach(ripple => {
+                ripple.style.display = 'none';
+            });
+        });
+
+        // スムーズスクロール
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
